@@ -4,37 +4,38 @@ import java.util.Objects;
 
 public class AppUser {
 
+    // We make all the fields private, so they only be effected
+    // by the getter / setter methods.
     private String firstName;
     private String lastName;
     private String username;
     private String password;
+    private String email;
     private int id;
+    private Role role;
 
-
-    // Constructors
-    //---------------------------------------------------------------------------------
     // No-args constructor
     public AppUser() {
         super();
     }
 
-    // Constructor for registration / login, no id assigned yet
-    public AppUser(String firstName, String lastName, String username, String password) {
+    // Constructor for AppUser during registration
+    public AppUser(String firstName, String lastName, String username, String password, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
+        this.email = email;
     }
 
-    // Constructor for authorization
-    public AppUser(String firstName, String lastName, String username, String password, int id) {
-        this(firstName, lastName, username, password);
+    // Constructor for AppUser after role and id are assigned
+    public AppUser(String firstName, String lastName, String username, String password, String email, int id, Role role) {
+        this(firstName, lastName, username, password, email);
         this.id = id;
+        this.role = role;
     }
 
-
-    // Getters and Setters
-    //---------------------------------------------------------------------------------
+    // Getters & Setters for AppUser
     public String getFirstName() {
         return firstName;
     }
@@ -67,6 +68,14 @@ public class AppUser {
         this.password = password;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public int getId() {
         return id;
     }
@@ -75,9 +84,16 @@ public class AppUser {
         this.id = id;
     }
 
+    public Role getRole() {
+        return role;
+    }
 
-    // Equals, Hashcode, and .toString() override
-    //---------------------------------------------------------------------------------
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    // Override equals() method, hashcode() method, & toString()
+    // to complete setup of simple POJO
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -87,12 +103,14 @@ public class AppUser {
                 Objects.equals(firstName, appUser.firstName) &&
                 Objects.equals(lastName, appUser.lastName) &&
                 Objects.equals(username, appUser.username) &&
-                Objects.equals(password, appUser.password);
+                Objects.equals(password, appUser.password) &&
+                Objects.equals(email, appUser.email) &&
+                role == appUser.role;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, username, password, id);
+        return Objects.hash(firstName, lastName, username, password, email, id, role);
     }
 
     @Override
@@ -102,7 +120,12 @@ public class AppUser {
                 ", lastName='" + lastName + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 ", id=" + id +
+                ", role=" + role +
                 '}';
     }
 }
+
+
+
