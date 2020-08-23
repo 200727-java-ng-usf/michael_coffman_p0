@@ -57,7 +57,7 @@ public class DashboardScreen extends Screens{
                         userService.addUserAccount(name);
                         break;
                     case "5":
-                        app.getRoute().navigate("/homescreen");
+                        app.invalidateCurrentSession();
                         break;
                     default:
                         System.out.println("Invalid Selection:");

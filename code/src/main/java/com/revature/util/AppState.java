@@ -3,10 +3,7 @@ package com.revature.util;
 //importing other package classes
 import com.revature.dataAccess.DAO;
 import com.revature.models.AppUser;
-import com.revature.screens.DashboardScreen;
-import com.revature.screens.HomeScreen;
-import com.revature.screens.LoginScreen;
-import com.revature.screens.RegistrationScreen;
+import com.revature.screens.*;
 import com.revature.services.UserService;
 
 //importing built-in utils
@@ -57,7 +54,10 @@ public class AppState {
         route.addToScreens(new HomeScreen())
              .addToScreens(new RegistrationScreen(userService))
              .addToScreens(new LoginScreen(userService))
-             .addToScreens(new DashboardScreen(userService));
+             .addToScreens(new DashboardScreen(userService))
+             .addToScreens(new BalanceScreen(userService))
+             .addToScreens(new WithdrawalScreen(userService))
+             .addToScreens(new DepositScreen(userService));
     }
 
 
