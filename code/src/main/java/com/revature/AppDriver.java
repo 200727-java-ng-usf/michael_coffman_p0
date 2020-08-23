@@ -1,7 +1,6 @@
 package com.revature;
 
 import com.revature.util.AppState;
-import com.revature.util.DatabaseConnection;
 
 public class AppDriver {
 
@@ -12,7 +11,7 @@ public class AppDriver {
     public static void main(String[] args) {
 
         while(app.running()) {
-            app.getRoute().navigate("/login");
+            app.getRoute().navigate("/homescreen");
         }
 
 

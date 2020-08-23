@@ -57,7 +57,7 @@ public class AppState {
         route.addToScreens(new HomeScreen())
              .addToScreens(new RegistrationScreen(userService))
              .addToScreens(new LoginScreen(userService))
-             .addToScreens(new DashboardScreen());
+             .addToScreens(new DashboardScreen(userService));
     }
 
 

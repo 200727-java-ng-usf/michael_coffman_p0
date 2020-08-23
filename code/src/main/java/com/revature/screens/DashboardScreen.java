@@ -1,11 +1,18 @@
 package com.revature.screens;
 
+import com.revature.services.UserService;
+
+import java.io.IOException;
+
 import static com.revature.AppDriver.app;
 
 public class DashboardScreen extends Screens{
 
-    public DashboardScreen() {
+    private UserService userService;
+
+    public DashboardScreen(UserService userService) {
         super("DashboardScreen", "/dashboard");
+        this.userService = userService;
     }
 
     @Override
@@ -26,7 +33,44 @@ public class DashboardScreen extends Screens{
             System.out.println("2) Withdrawal");
             System.out.println("3) Deposit");
             System.out.println("4) Add Account");
-            System.out.println("8) Log Out");
+            System.out.println("5) Log Out");
+
+            try {
+                System.out.println("What would you like to do?");
+                selection = app.getConsole().readLine();
+
+                switch (selection) {
+                    case "1":
+                        System.out.println("Check balance Needs Implementing");
+                        break;
+                    case "2":
+                        System.out.println("Withdrawal needs implementing");
+                        break;
+                    case "3":
+                        System.out.println("Deposit needs implementing");
+                        break;
+                    case "4":
+                        System.out.println("You are about to add a new account to " + app.getCurrentUser().getUsername() + "'s profile.");
+                        System.out.println("Please enter the name you would like to give this account.");
+                        System.out.print("-> ");
+                        String name = app.getConsole().readLine();
+                        userService.addUserAccount(name);
+                        break;
+                    case "5":
+                        app.getRoute().navigate("/homescreen");
+                        break;
+                    default:
+                        System.out.println("Invalid Selection:");
+
+                }
+
+
+
+
+
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
 
 
         }
