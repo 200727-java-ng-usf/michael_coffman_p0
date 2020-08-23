@@ -1,5 +1,6 @@
 package com.revature.screens;
 
+import com.revature.dataAccess.DAO;
 import com.revature.exceptions.InvalidRequestException;
 import com.revature.models.AppUser;
 import com.revature.services.UserService;
@@ -9,6 +10,7 @@ import static com.revature.AppDriver.app;
 public class RegistrationScreen extends Screens{
 
     private UserService userService;
+    private DAO dataObject;
 
     // This constructor takes in a UserService object because it will be
     // making use of the UserService .registration() method to register
@@ -43,6 +45,7 @@ public class RegistrationScreen extends Screens{
             // saved into the database.
             AppUser newUser = new AppUser(firstName, lastName, username, password, email);
             userService.registration(newUser);
+
 
             // Once the user passes registration, it gets set as the current user, which
             // validates the current session, allowing them to be taken directly to the dashboard

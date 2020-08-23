@@ -1,5 +1,6 @@
 package com.revature.dataAccess;
 
+import com.revature.models.Accounts;
 import com.revature.models.AppUser;
 import com.revature.models.Role;
 import com.revature.util.DatabaseConnection;
@@ -10,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -119,6 +121,33 @@ public class DAO {
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
+    }
+
+
+    public int findUserById(AppUser currentUser) {
+
+        int id = 0;
+
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+
+            String query = "SELECT id FROM project0.app_users " +
+                           "WHERE username = ?";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, currentUser.getUsername());
+
+            ResultSet result = statement.executeQuery();
+
+            if (result.next()) {
+                id = result.getInt(1);
+            }
+
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return id;
     }
 
     /**

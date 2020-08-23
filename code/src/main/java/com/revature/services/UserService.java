@@ -60,7 +60,6 @@ public class UserService {
         newUser.setRole(Role.BASIC_USER);
         dataObject.save(newUser);
         app.setCurrentUser(newUser);
-
     }
 
     /**
@@ -68,9 +67,8 @@ public class UserService {
      * @param name
      */
     public void addUserAccount(String name) {
-        dataObject.addAccount(name, app.getCurrentUser().getId());
+        dataObject.addAccount(name, dataObject.findUserById(app.getCurrentUser()));
     }
-
 
 
     public boolean isUserValid(AppUser user) {
