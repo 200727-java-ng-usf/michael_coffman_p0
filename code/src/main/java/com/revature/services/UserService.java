@@ -6,6 +6,8 @@ import com.revature.exceptions.InvalidRequestException;
 import com.revature.models.AppUser;
 import com.revature.models.Role;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static com.revature.AppDriver.app;
@@ -68,6 +70,10 @@ public class UserService {
      */
     public void addUserAccount(String name) {
         dataObject.addAccount(name, dataObject.findUserById(app.getCurrentUser()));
+    }
+
+    public void getListOfAccounts() throws SQLException {
+        dataObject.getBalances(dataObject.findUserById(app.getCurrentUser()));
     }
 
 

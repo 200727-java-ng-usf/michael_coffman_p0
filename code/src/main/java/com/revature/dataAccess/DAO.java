@@ -1,19 +1,11 @@
 package com.revature.dataAccess;
 
-import com.revature.models.Accounts;
 import com.revature.models.AppUser;
 import com.revature.models.Role;
 import com.revature.util.DatabaseConnection;
 
-import javax.xml.transform.Result;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 
 /**
  * This class handles all the CRUD operations between the persistence
@@ -30,6 +22,7 @@ public class DAO {
     /**
      * Finds the user in the database specified by the parameters
      * username and password
+     *
      * @param username
      * @param password
      * @return AppUser object containing correct information
@@ -45,9 +38,9 @@ public class DAO {
             // This is just setting a string field to the specific query we want to execute
             // when calling findUserByLogin method.
             String query = "SELECT * FROM project0.app_users au " +
-                           "JOIN project0.user_roles ur " +
-                           "ON au.role_id = ur.id " +
-                           "WHERE username = ? AND password = ?";
+                    "JOIN project0.user_roles ur " +
+                    "ON au.role_id = ur.id " +
+                    "WHERE username = ? AND password = ?";
 
             // This block of code is just setting up which '?' will equal what.
             // Using prepared statements helps prevent malicious SQLi attacks.
@@ -70,6 +63,7 @@ public class DAO {
     /**
      * Returns AppUser by just username. Used for ensuring no username is used between
      * user accounts.
+     *
      * @param username from registration screen
      * @return AppUser.username
      */
@@ -80,7 +74,7 @@ public class DAO {
         try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 
             String query = "SELECT username FROM project0.app_users " +
-                           "WHERE username = ?";
+                    "WHERE username = ?";
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
@@ -93,12 +87,13 @@ public class DAO {
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
-       return opUser;
+        return opUser;
     }
 
 
     /**
      * Saves the newUser into the database during the UserService.registration()
+     *
      * @param newUser
      */
     public void save(AppUser newUser) {
@@ -106,7 +101,7 @@ public class DAO {
         try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 
             String query = "INSERT INTO project0.app_users (first_name, last_name, username, password, email, role_id) " +
-                           "VALUES (?, ?, ?, ?, ?, ?)";
+                    "VALUES (?, ?, ?, ?, ?, ?)";
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, newUser.getFirstName());
@@ -124,6 +119,13 @@ public class DAO {
     }
 
 
+    /**
+     * When a user registers, this updates the currentUser object to include
+     * their id given to them by our database.
+     *
+     * @param currentUser
+     * @return
+     */
     public int findUserById(AppUser currentUser) {
 
         int id = 0;
@@ -131,7 +133,7 @@ public class DAO {
         try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 
             String query = "SELECT id FROM project0.app_users " +
-                           "WHERE username = ?";
+                    "WHERE username = ?";
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, currentUser.getUsername());
@@ -152,15 +154,16 @@ public class DAO {
 
     /**
      * Adds the new account into the database
+     *
      * @param accountName This is user-defined in the dashboard screen when opting to make a new account
-     * @param id This is grabbed from the current user's id assigned to them by their existing spot in the database
+     * @param id          This is grabbed from the current user's id assigned to them by their existing spot in the database
      */
     public void addAccount(String accountName, int id) {
 
         try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 
             String query = "INSERT INTO project0.accounts (name, user_id) " +
-                           "VALUES (?, ?)";
+                    "VALUES (?, ?)";
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, accountName);
@@ -173,6 +176,47 @@ public class DAO {
             sqle.printStackTrace();
         }
     }
+
+    /**
+     * To grab all the names of all the accounts belonging to currentUser
+     * @param id
+     * @return
+     * @throws SQLException
+     */
+    public ArrayList<String> getBalances(int id) throws SQLException {
+
+        ArrayList<String> listOfUserAccounts = new ArrayList<>();
+
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+
+            String query = "SELECT name, amount FROM project0.accounts " +
+                    "WHERE user_id = ?";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+
+            ResultSet results = statement.executeQuery();
+
+            while (results.next()) {
+
+                System.out.print("Name: ");
+                System.out.println(results.getString(1));
+
+                System.out.print("Amount: ");
+                System.out.println(results.getString(2));
+                System.out.println("+------------------------------------+");
+            }
+
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return listOfUserAccounts;
+
+}
+
+
 
 
 

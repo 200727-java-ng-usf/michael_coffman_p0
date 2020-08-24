@@ -37,9 +37,9 @@ create table app_users(
 
 CREATE TABLE accounts(
 	id serial,
-	name varchar(25) NOT NULL,
-	amount NUMERIC(15, 2) DEFAULT 0.00 NOT NULL,
-	user_id int NOT NULL,
+	name varchar(25) DEFAULT 'Checking' NOT NULL,
+	amount money DEFAULT 0.00 NOT NULL,
+	user_id serial,
 	
 	CONSTRAINT accounts_pk
 	PRIMARY KEY (id),
@@ -47,6 +47,7 @@ CREATE TABLE accounts(
 	CONSTRAINT app_user_fk
 	FOREIGN KEY (user_id) 
 	REFERENCES app_users(id) 
+	ON DELETE CASCADE 
 );
 
 -- Insert constant roles into user_roles
@@ -76,5 +77,6 @@ SELECT name
 FROM accounts 
 WHERE user_id = 1;
 
-COMMIT;
 
+
+COMMIT;

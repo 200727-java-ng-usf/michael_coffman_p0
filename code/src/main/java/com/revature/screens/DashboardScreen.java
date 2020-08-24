@@ -3,6 +3,7 @@ package com.revature.screens;
 import com.revature.services.UserService;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import static com.revature.AppDriver.app;
 
@@ -20,6 +21,7 @@ public class DashboardScreen extends Screens{
 
         // Welcome message for the user who logs in successfully
         System.out.println("Welcome to your dashboard " + app.getCurrentUser().getFirstName());
+        System.out.println("+---------------------------------------------------+\n");
 
         // String for determining which screen the user would like to go to next
         String selection;
@@ -33,16 +35,23 @@ public class DashboardScreen extends Screens{
             System.out.println("2) Withdrawal");
             System.out.println("3) Deposit");
             System.out.println("4) Add Account");
-            System.out.println("5) Log Out");
+            System.out.println("5) Log Out\n");
 
             try {
-                System.out.println("What would you like to do?");
+                System.out.print("What would you like to do? ");
                 selection = app.getConsole().readLine();
 
                 switch (selection) {
                     case "1":
-                        System.out.println("Check balance Needs Implementing");
+
+                        try {
+                            System.out.println("\n");
+                            userService.getListOfAccounts();
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
                         break;
+
                     case "2":
                         System.out.println("Withdrawal needs implementing");
                         break;

@@ -55,7 +55,6 @@ public class AppState {
              .addToScreens(new RegistrationScreen(userService))
              .addToScreens(new LoginScreen(userService))
              .addToScreens(new DashboardScreen(userService))
-             .addToScreens(new BalanceScreen(userService))
              .addToScreens(new WithdrawalScreen(userService))
              .addToScreens(new DepositScreen(userService));
 
