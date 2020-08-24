@@ -5,8 +5,11 @@ grant all privileges
 on database postgres
 to project0_user;
 
--- Create Tables for user_roles, app_users, and accounts
+DROP TABLE user_roles;
+DROP TABLE app_users;
+DROP TABLE accounts;
 
+-- Create Tables for user_roles, app_users, and accounts
 CREATE TABLE user_roles(
 	id serial,
 	name varchar(25) NOT NULL,
@@ -29,7 +32,7 @@ create table app_users(
 	
 	CONSTRAINT user_roles_fk
 	FOREIGN KEY (role_id) 
-	REFERENCES user_roles
+	REFERENCES user_roles(id)
 );
 
 CREATE TABLE accounts(
@@ -43,7 +46,7 @@ CREATE TABLE accounts(
 	
 	CONSTRAINT app_user_fk
 	FOREIGN KEY (user_id) 
-	REFERENCES app_users(id)
+	REFERENCES app_users(id) 
 );
 
 -- Insert constant roles into user_roles
@@ -64,9 +67,14 @@ VALUES
 	('Checking', 100.00, 1);
 
 
-SELECT * 
-FROM app_users
-JOIN accounts
-WHERE user_id = id;
+SELECT au.first_name, au.last_name, au.username, au.PASSWORD, au.email, ac.name, ac.amount
+FROM app_users au 
+JOIN accounts ac 
+ON au.id = ac.user_id; 
 
+SELECT name 
+FROM accounts 
+WHERE user_id = 1;
+
+COMMIT;
 

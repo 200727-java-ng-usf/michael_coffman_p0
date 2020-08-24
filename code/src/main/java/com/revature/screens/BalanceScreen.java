@@ -14,7 +14,7 @@ public class BalanceScreen extends Screens{
     @Override
     public void render() {
 
-
+        System.out.println("Which account would you like check?");
 
 
 
