@@ -52,6 +52,8 @@ public class WithdrawalScreen extends Screens {
 
                     case "2":
 
+                        // We are going to print out all of the accounts from the user's profile
+                        // for them to see what their accounts are named.
                         for (int i = 0; i < userService.getAccountNames().size(); i++) {
 
                             System.out.println(i + 1 + ") " + userService.getAccountNames().get(i));

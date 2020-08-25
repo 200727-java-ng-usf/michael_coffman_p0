@@ -198,6 +198,8 @@ public class DAO {
 
             ResultSet results = statement.executeQuery();
 
+
+
             while (results.next()) {
 
                 System.out.print("Name: ");

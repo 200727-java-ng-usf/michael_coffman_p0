@@ -41,7 +41,8 @@ public class DatabaseConnection {
             // This is DriverManager actually establishing the connection with
             // the username and password we've set for our database. This is root
             // user access
-            // TODO make the connection work with user and password we set specific for Project0 Schema
+
+            // .properties file won't recognize url tag, and thinks the whole thing is null......
             conn = DriverManager.getConnection(
                     "jdbc:postgresql://revature-training.cveu74hasekl.us-east-1.rds.amazonaws.com:5432/postgres",
                     "postgres",
