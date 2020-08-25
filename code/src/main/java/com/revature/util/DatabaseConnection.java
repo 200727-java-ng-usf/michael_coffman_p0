@@ -1,9 +1,11 @@
 package com.revature.util;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class DatabaseConnection {
 
@@ -11,10 +13,17 @@ public class DatabaseConnection {
     // Private makes only this class be able to instantiate it.
     private static DatabaseConnection dataConnect = new DatabaseConnection();
 
+    private Properties properties = new Properties();
+
     // Default Constructor
     // TODO change this to load from properties file
     private DatabaseConnection() {
         super();
+        try {
+            properties.load(new FileReader("src/main/resources/application.properties"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // We make this method public, so if we need the DatabaseConnection,
@@ -44,9 +53,9 @@ public class DatabaseConnection {
 
             // .properties file won't recognize url tag, and thinks the whole thing is null......
             conn = DriverManager.getConnection(
-                    "jdbc:postgresql://revature-training.cveu74hasekl.us-east-1.rds.amazonaws.com:5432/postgres",
-                    "postgres",
-                    "Ultimate1!"
+                    properties.getProperty("url"),
+                    properties.getProperty("username"),
+                    properties.getProperty("password")
             );
 
         } catch (ClassNotFoundException | SQLException e) {

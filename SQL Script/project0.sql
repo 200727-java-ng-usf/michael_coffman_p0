@@ -84,5 +84,7 @@ FOR EACH ROW
 EXECUTE FUNCTION no_overdraft();
 
 
+SELECT * FROM app_users;
+
 COMMIT;
 
