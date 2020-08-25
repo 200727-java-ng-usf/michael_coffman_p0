@@ -72,8 +72,28 @@ public class UserService {
         dataObject.addAccount(name, dataObject.findUserById(app.getCurrentUser()));
     }
 
-    public void getListOfAccounts() throws SQLException {
+    public void getBalance() throws SQLException {
         dataObject.getBalances(dataObject.findUserById(app.getCurrentUser()));
+    }
+
+    public void deposit(int choice, double deposit) {
+        try {
+            dataObject.deposit(choice, deposit);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public ArrayList<String> getAccountNames() {
+        ArrayList<String> accountNames = new ArrayList<>();
+        try {
+            accountNames = dataObject.getAccountNames(app.getCurrentUser().getId());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+
+        return accountNames;
     }
 
 

@@ -46,7 +46,7 @@ public class DashboardScreen extends Screens{
 
                         try {
                             System.out.println("\n");
-                            userService.getListOfAccounts();
+                            userService.getBalance();
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         }
@@ -56,7 +56,7 @@ public class DashboardScreen extends Screens{
                         System.out.println("Withdrawal needs implementing");
                         break;
                     case "3":
-                        System.out.println("Deposit needs implementing");
+                        app.getRoute().navigate("/deposit");
                         break;
                     case "4":
                         System.out.println("You are about to add a new account to " + app.getCurrentUser().getUsername() + "'s profile.");

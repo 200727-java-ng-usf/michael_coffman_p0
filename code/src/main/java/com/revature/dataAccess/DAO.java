@@ -217,8 +217,62 @@ public class DAO {
 }
 
 
+    /**
+     * Grabs only account names for deposit / withdrawal screens
+     * @param id
+     * @return
+     * @throws SQLException
+     */
+    public ArrayList<String> getAccountNames(int id) throws SQLException {
+
+        ArrayList<String> accountNames = new ArrayList<>();
+
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 
 
+            String query = "SELECT name FROM project0.accounts " +
+                    "WHERE user_id = ?";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+
+            ResultSet results = statement.executeQuery();
+
+            while (results.next()) {
+
+                System.out.println(results.getString(1));
+
+            }
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return accountNames;
+    }
+
+
+    public void deposit(int accountChoice, double amount, int userId) throws SQLException {
+
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+
+            String query = "UPDATE project0.accounts " +
+                           "SET amount = amount + ? " +
+                           "WHERE id = ? " +
+                                "AND user_id = ?";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setDouble(1, amount);
+            statement.setInt(2, accountChoice);
+            statement.setInt(3, userId);
+
+
+            statement.executeUpdate();
+
+
+
+        }
+    }
 
 
     /**
