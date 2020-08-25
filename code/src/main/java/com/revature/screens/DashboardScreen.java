@@ -1,5 +1,6 @@
 package com.revature.screens;
 
+import com.revature.dataAccess.DAO;
 import com.revature.services.UserService;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import static com.revature.AppDriver.app;
 public class DashboardScreen extends Screens{
 
     private UserService userService;
+    private DAO dataObject;
 
     public DashboardScreen(UserService userService) {
         super("DashboardScreen", "/dashboard");
@@ -18,6 +20,9 @@ public class DashboardScreen extends Screens{
 
     @Override
     public void render() {
+        // This ensures the newly assigned Id is pulled from the database
+        // so other features of the app will work upon first login.
+        userService.getId();
 
         // Welcome message for the user who logs in successfully
         System.out.println("Welcome to your dashboard " + app.getCurrentUser().getFirstName());
@@ -31,6 +36,7 @@ public class DashboardScreen extends Screens{
 
         while (app.validSession()) {
 
+
             System.out.println("1) Check Balance");
             System.out.println("2) Withdrawal");
             System.out.println("3) Deposit");
@@ -38,22 +44,24 @@ public class DashboardScreen extends Screens{
             System.out.println("5) Log Out\n");
 
             try {
-                System.out.print("What would you like to do? ");
+                System.out.println("What would you like to do? ");
+                System.out.print("> ");
                 selection = app.getConsole().readLine();
+                System.out.println("\n");
 
                 switch (selection) {
                     case "1":
 
                         try {
-                            System.out.println("\n");
                             userService.getBalance();
+                            System.out.println("\n");
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         }
                         break;
 
                     case "2":
-                        System.out.println("Withdrawal needs implementing");
+                        app.getRoute().navigate("/withdraw");
                         break;
                     case "3":
                         app.getRoute().navigate("/deposit");
@@ -72,11 +80,6 @@ public class DashboardScreen extends Screens{
                         System.out.println("Invalid Selection:");
 
                 }
-
-
-
-
-
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }

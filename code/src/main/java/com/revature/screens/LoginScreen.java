@@ -32,6 +32,7 @@ public class LoginScreen extends Screens{
             username = app.getConsole().readLine();
             System.out.print("Password: ");
             password = app.getConsole().readLine();
+            System.out.println("\n");
 
             // Takes in the username and password entered, and executes the
             // authentication method to make sure they're an authorized user.

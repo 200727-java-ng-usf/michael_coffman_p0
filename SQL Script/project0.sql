@@ -38,8 +38,11 @@ create table app_users(
 CREATE TABLE accounts(
 	id serial,
 	name varchar(25) DEFAULT 'Checking' NOT NULL,
-	amount money DEFAULT 0.00 NOT NULL,
+	amount numeric(10, 2) DEFAULT 0.00 NOT NULL,
 	user_id serial,
+	
+	CONSTRAINT amount_nonnegative 
+	CHECK (amount >= 0)
 	
 	CONSTRAINT accounts_pk
 	PRIMARY KEY (id),
@@ -50,33 +53,36 @@ CREATE TABLE accounts(
 	ON DELETE CASCADE 
 );
 
+
 -- Insert constant roles into user_roles
 INSERT INTO user_roles (name)
 VALUES 
 	('Basic User'), ('Admin'), ('LOCKED');
 
-SELECT * FROM user_roles;
-SELECT * FROM app_users;
-SELECT * FROM accounts;
+-- Create the function that will prevent overdrafting from accounts table
 
-INSERT INTO app_users (first_name, last_name, username, PASSWORD, email, role_id)
-VALUES 
-	('Michael', 'Coffman', 'mcoffma04', 'password', 'mcoffma@revature.net', 2);
+CREATE OR REPLACE FUNCTION no_overdraft()
+RETURNS TRIGGER 
+AS $$
 
-INSERT INTO accounts (name, amount, user_id)
-VALUES 
-	('Checking', 100.00, 1);
+	BEGIN 
+		 
+		IF (NEW.amount < 0) THEN 
+			RETURN NULL; -- cancels the execution of the original statement
+		END IF;
+	
+	
+	RETURN NEW; -- return to the trigger without halting the original statement
+	
+	END
 
+$$ LANGUAGE plpgsql;
 
-SELECT au.first_name, au.last_name, au.username, au.PASSWORD, au.email, ac.name, ac.amount
-FROM app_users au 
-JOIN accounts ac 
-ON au.id = ac.user_id; 
-
-SELECT name 
-FROM accounts 
-WHERE user_id = 1;
-
+CREATE TRIGGER no_overdraft
+BEFORE INSERT OR UPDATE ON accounts
+FOR EACH ROW 
+EXECUTE FUNCTION no_overdraft();
 
 
 COMMIT;
+

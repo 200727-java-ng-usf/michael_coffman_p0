@@ -16,6 +16,7 @@ import static com.revature.AppDriver.app;
 public class UserService {
 
     private DAO dataObject;
+    private int updatedRows;
 
     // This constructor takes in the DAO object. It's loose coupling
     // so when if the DAO is changed, it will not break the UserService object.
@@ -47,6 +48,11 @@ public class UserService {
         app.setCurrentUser(authorizedUser);
     }
 
+    /**
+     * Registers a newUser if the credentials they've entered have passed
+     * all of the checks. uses DAO.save() to save them into the database.
+     * @param newUser
+     */
     public void registration(AppUser newUser) {
 
         if (!isUserValid(newUser)) {
@@ -72,18 +78,52 @@ public class UserService {
         dataObject.addAccount(name, dataObject.findUserById(app.getCurrentUser()));
     }
 
+    /**
+     * Retrieves the balance of all accounts associated with the user
+     * @throws SQLException
+     */
     public void getBalance() throws SQLException {
         dataObject.getBalances(dataObject.findUserById(app.getCurrentUser()));
     }
 
-    public void deposit(int choice, double deposit) {
+    /**
+     * Deposits money into a user account
+     * @param accountChoice
+     * @param deposit
+     * @return
+     */
+    public int deposit(String accountChoice, double deposit) {
+
         try {
-            dataObject.deposit(choice, deposit);
+            updatedRows = dataObject.deposit(accountChoice, app.getCurrentUser().getId(), deposit);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        return updatedRows;
     }
 
+    /**
+     * Withdraws money from a user account
+     * @param accountChoice
+     * @param withdraw
+     * @return
+     */
+    public int withdraw(String accountChoice, double withdraw) {
+
+        try {
+           updatedRows = dataObject.withdraw(accountChoice, app.getCurrentUser().getId(), withdraw);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return updatedRows;
+
+    }
+
+    /**
+     * Gathers all the user's accounts to display just their names
+     * @return ArrayList<String> accountNames
+     */
     public ArrayList<String> getAccountNames() {
         ArrayList<String> accountNames = new ArrayList<>();
         try {
@@ -96,7 +136,19 @@ public class UserService {
         return accountNames;
     }
 
+    /**
+     * Assigns the currentUser their appropriate Id after registration
+     * to allow smooth transition from registration to dashboard
+     */
+    public void getId() {
+        app.getCurrentUser().setId(dataObject.findUserById(app.getCurrentUser()));
+    }
 
+    /**
+     * Checks if credentials entered by user satisfy our requirements
+     * @param user
+     * @return boolean
+     */
     public boolean isUserValid(AppUser user) {
         if (user == null) return false;
         if (user.getFirstName() == null || user.getFirstName().trim().equals("")) return false;

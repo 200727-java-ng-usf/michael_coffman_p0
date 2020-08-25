@@ -169,6 +169,7 @@ public class DAO {
             statement.setString(1, accountName);
             statement.setInt(2, id);
 
+
             statement.executeUpdate();
 
 
@@ -202,18 +203,14 @@ public class DAO {
                 System.out.print("Name: ");
                 System.out.println(results.getString(1));
 
-                System.out.print("Amount: ");
+                System.out.print("Amount: $");
                 System.out.println(results.getString(2));
                 System.out.println("+------------------------------------+");
             }
-
-
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
-
         return listOfUserAccounts;
-
 }
 
 
@@ -238,9 +235,12 @@ public class DAO {
 
             ResultSet results = statement.executeQuery();
 
+
             while (results.next()) {
 
-                System.out.println(results.getString(1));
+                accountNames.add(results.getString(1));
+
+//                System.out.println(results.getString(1));
 
             }
 
@@ -251,27 +251,67 @@ public class DAO {
     }
 
 
-    public void deposit(int accountChoice, double amount, int userId) throws SQLException {
+    /**
+     * Deposits the user-defined amount of money into the user-defined account
+     * @param accountChoice
+     * @param id
+     * @param amount
+     * @throws SQLException
+     */
+    public int deposit(String accountChoice, int id, double amount) throws SQLException {
+
+        int updatedRows;
 
         try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 
             String query = "UPDATE project0.accounts " +
                            "SET amount = amount + ? " +
-                           "WHERE id = ? " +
-                                "AND user_id = ?";
+                           "WHERE user_id = ? " +
+                                "AND name = ?";
 
             PreparedStatement statement = connection.prepareStatement(query);
 
             statement.setDouble(1, amount);
-            statement.setInt(2, accountChoice);
-            statement.setInt(3, userId);
+            statement.setInt(2, id);
+            statement.setString(3, accountChoice);
 
 
-            statement.executeUpdate();
-
-
-
+            updatedRows = statement.executeUpdate();
         }
+        return updatedRows;
+    }
+
+    /**
+     * Withdraws the user-defined amount of money from the user-defined account
+     * @param accountChoice
+     * @param id
+     * @param amount
+     * @return
+     * @throws SQLException
+     */
+    public int withdraw(String accountChoice, int id, double amount) throws SQLException {
+
+        int updatedRows = 0;
+
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+
+            String query = "UPDATE project0.accounts " +
+                    "SET amount = amount - ? " +
+                    "WHERE user_id = ? " +
+                    "AND name = ?";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setDouble(1, amount);
+            statement.setInt(2, id);
+            statement.setString(3, accountChoice);
+
+
+            updatedRows = statement.executeUpdate();
+        }
+
+        return updatedRows;
+
     }
 
 
