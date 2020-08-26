@@ -70,18 +70,18 @@ public class DepositScreen extends Screens {
                             updatedRows = userService.deposit(accountChoice, amount);
 
                             if (updatedRows == 0) {
-                                System.err.println("Invalid account name.");
+                                System.out.println("Invalid account name.");
                             }
 
                         } catch (NumberFormatException nfe) {
-                            System.err.println("Invalid input. Enter a double");
+                            System.out.println("Invalid input. Enter a double");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         break;
 
                     default:
-                        System.err.println("Invalid Selection");
+                        System.out.println("Invalid Selection");
                 }
 
             } catch (Exception e) {

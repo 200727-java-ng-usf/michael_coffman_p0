@@ -77,13 +77,14 @@ public class WithdrawalScreen extends Screens {
 
 
                         } catch (NumberFormatException nfe) {
-                            System.err.println("Invalid input. Enter a double");
+                            System.out.println("Invalid input. Enter a double");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        break;
 
                     default:
-                        System.err.println("Invalid selection.");
+                        System.out.println("Invalid selection.");
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();

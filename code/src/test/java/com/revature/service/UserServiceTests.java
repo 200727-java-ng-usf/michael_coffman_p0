@@ -11,7 +11,6 @@ import com.revature.models.AppUser;
 import com.revature.services.UserService;
 import static com.revature.AppDriver.*;
 
-
 // Testing Imports
 import org.junit.After;
 import org.junit.Assert;
@@ -19,19 +18,31 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static com.sun.xml.internal.ws.policy.sourcemodel.wspolicy.XmlToken.Optional;
+import static org.mockito.Mockito.*;
+
+
 // Java Util Imports
-
-
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.InputMismatchException;
+import java.util.Optional;
+import java.util.Set;
 import static com.revature.models.Role.BASIC_USER;
+import static org.mockito.Mockito.mock;
 
 public class UserServiceTests {
 
     private UserService sut;
-    private DAO mockDAO = Mockito.mock(DAO.class);
+    private DAO mockDAO = mock(DAO.class);
+    AppUser Drew = new AppUser("Drew", "State", "dstate", "password", "dstate@gmail.com", 1,  BASIC_USER);
+
 
     @Before
     public void setup() {
+
         sut = new UserService(mockDAO);
+        DAO mockDAO = mock(DAO.class);
     }
 
     @After
@@ -39,6 +50,7 @@ public class UserServiceTests {
 
         // This clears the reference to UserService dependency after each test
         sut = null;
+        mockDAO = null;
     }
 
     // Testing authentication method
@@ -46,9 +58,7 @@ public class UserServiceTests {
     public void InvalidCredentialsEntered() {
 
         // Arrange
-        // Nothing to arrange. This will just check to make sure
-        // the authentication method knows not to accept empty strings
-        // or spaces in between strings ie. username: Billy Bob instead of username: BillyBob
+
 
         // Act
         sut.authentication("", "");
@@ -68,6 +78,29 @@ public class UserServiceTests {
         // Act
         sut.authentication("The", "Guy");
     }
+
+    @Test
+    public void fullAuthentication() {
+
+        // Arrange
+
+        AppUser expected = new AppUser("Michael", "Coffman", "mcoffma04", "password", "michaelcoffman1991@gmail.com", 1,  BASIC_USER);
+        AppUser actual;
+
+
+        // Act
+
+        when(mockDAO.findUserByLogin("mcoffma04", "password"))
+                .thenReturn(java.util.Optional.of(actual = expected));
+
+
+        // Assess
+
+        Assert.assertEquals(expected, actual);
+
+
+    }
+
 
 
     // Testing registration method
@@ -129,23 +162,23 @@ public class UserServiceTests {
 
         // Arrange
 
-        double amount = 0;
-        int updatedRow = 0;
-        int itDidUpdate = 1;
+        String accountName = "Checking";
+        double amount = 10.00;
+        int updatedRows = 0;
+
 
         // Act
 
-        // User-defined amount to deposit
-        amount = amount + 20.00;
-
-        // DOA returns amount of updated rows
-        // This is the main confirmation that
-        // the account did indeed update.
-        updatedRow = 1;
+        try {
+            when(mockDAO.deposit(accountName, 1, amount))
+                    .thenReturn(updatedRows = 1);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
         // Assess
 
-        Assert.assertEquals(updatedRow, itDidUpdate);
+        Assert.assertEquals(1, updatedRows);
 
     }
 
@@ -154,23 +187,51 @@ public class UserServiceTests {
 
         // Arrange
 
-        double amount = 100.00;
-        int updatedRow = 0;
-        int itDidUpdate = 1;
+        String accountName = "Savings";
+        double amount = 20.00;
+        int updatedRows = 0;
+
 
         // Act
 
-        // User-defined amount to deposit
-        amount = amount - 50.00;
-
-        // DOA returns amount of updated rows
-        // This is the main confirmation that
-        // the account did indeed update.
-        updatedRow = 1;
+        try {
+            when(mockDAO.withdraw(accountName, 1, amount))
+                    .thenReturn(updatedRows = 1);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
         // Assess
 
-        Assert.assertEquals(updatedRow, itDidUpdate);
+        Assert.assertEquals(1, updatedRows);
+    }
+
+    @Test
+    public void noOverdraft() {
+
+        // Arrange
+
+        String accountName = "Savings";
+        double amount = 20.00;
+        int updatedRows = 0;
+
+
+        // Act
+
+        try {
+            when(mockDAO.withdraw(accountName, 1, amount))
+                    // the function to prevent overdraft is on persistence-tier
+                    // but it returns an int of # of rows changed. So being 0, means the account
+                    // did not have money withdrawn.
+                    .thenReturn(updatedRows = 0);
+        } catch (SQLException throwables) {
+            System.out.println("You are trying to overdraft!");
+        }
+
+        // Assess
+
+        Assert.assertEquals(0, updatedRows);
+
     }
 
     // Throws a numberFormatException in case user wants
@@ -180,23 +241,45 @@ public class UserServiceTests {
 
         // Arrange
 
-        double amount = 0;
-        int updatedRow = 0;
+        String accountName = "Checking";
+        double amount = Double.parseDouble("ugh");
+        int updatedRows = 0;
+
 
         // Act
 
-        // User-defined amount to deposit
-
-
-            amount = amount - Double.parseDouble("fdsjk");
-
-
-        // DOA returns amount of updated rows
-        // This is the main confirmation that
-        // the account did indeed update.
-        updatedRow = 0;
+        try {
+            when(mockDAO.withdraw(accountName, 1, amount))
+                    .thenReturn(updatedRows = 1);
+        } catch (NumberFormatException | SQLException e) {
+            e.printStackTrace();
+        }
 
         // Assess
+
+    }
+
+    @Test
+    public void incorrectAccountName() {
+
+        // Arrange
+
+        String accountName = "Checking";
+        double amount = 50.50;
+        int updatedRows = 0;
+
+        // Act
+
+        try {
+            when(mockDAO.withdraw("WrongAccountName", 1, amount))
+                    .thenReturn(updatedRows = 0);
+        } catch (NumberFormatException | SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Assess
+
+        Assert.assertEquals(0, updatedRows);
 
     }
 
