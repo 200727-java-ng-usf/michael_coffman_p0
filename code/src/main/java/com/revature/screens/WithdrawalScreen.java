@@ -72,7 +72,7 @@ public class WithdrawalScreen extends Screens {
                             updatedRows = userService.withdraw(accountChoice, amount);
 
                             if (updatedRows == 0) {
-                                System.out.println("You are trying to overdraft or you've entered an invalid account name.");
+                                System.out.println("You are trying to overdraft.");
                             }
 
 
